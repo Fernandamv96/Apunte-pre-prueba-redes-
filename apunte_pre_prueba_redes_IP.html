@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apunte Pre-Prueba: Direccionamiento IP y Subredes</title>
+<style>
+  :root {
+    --rojo: #C0392B;
+    --rojo-claro: #FADBD8;
+    --azul: #1A5276;
+    --azul-claro: #D6EAF8;
+    --verde: #1E8449;
+    --verde-claro: #D5F5E3;
+    --amarillo: #D4AC0D;
+    --amarillo-claro: #FEF9E7;
+    --gris: #2C3E50;
+    --gris-claro: #F2F3F4;
+    --naranja: #CA6F1E;
+    --naranja-claro: #FDEBD0;
+    --bg: #FAFAFA;
+    --card-bg: #FFFFFF;
+    --texto: #1C1C1C;
+    --texto-sec: #555;
+    --borde: #E0E0E0;
+    --sombra: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg);
+    color: var(--texto);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%);
+    color: white;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 20px,
+      rgba(255,255,255,0.02) 20px,
+      rgba(255,255,255,0.02) 40px
+    );
+  }
+
+  .header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    position: relative;
+  }
+
+  .header .badge {
+    display: inline-block;
+    background: #E74C3C;
+    color: white;
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .header p {
+    opacity: 0.8;
+    font-size: 14px;
+    margin-top: 0.5rem;
+    position: relative;
+  }
+
+  .nav-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 1rem 2rem;
+    background: white;
+    border-bottom: 2px solid var(--borde);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  .nav-tab {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid var(--borde);
+    background: white;
+    color: var(--texto-sec);
+    transition: all 0.2s;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .nav-tab:hover { background: var(--gris-claro); }
+  .nav-tab.active { background: var(--azul); color: white; border-color: var(--azul); }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  section {
+    margin-bottom: 3rem;
+    scroll-margin-top: 80px;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 3px solid;
+  }
+
+  .section-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .section-title h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  .s1 .section-title { border-color: var(--azul); }
+  .s1 .section-icon { background: var(--azul-claro); }
+  .s2 .section-title { border-color: var(--verde); }
+  .s2 .section-icon { background: var(--verde-claro); }
+  .s3 .section-title { border-color: var(--naranja); }
+  .s3 .section-icon { background: var(--naranja-claro); }
+  .s4 .section-title { border-color: var(--rojo); }
+  .s4 .section-icon { background: var(--rojo-claro); }
+  .s5 .section-title { border-color: var(--amarillo); }
+  .s5 .section-icon { background: var(--amarillo-claro); }
+  .s6 .section-title { border-color: #8E44AD; }
+  .s6 .section-icon { background: #F5EEF8; }
+  .s7 .section-title { border-color: #17A589; }
+  .s7 .section-icon { background: #E8F8F5; }
+  .s8 .section-title { border-color: #2C3E50; }
+  .s8 .section-icon { background: #F2F3F4; }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--sombra);
+  }
+
+  .card-rojo { border-left: 4px solid var(--rojo); }
+  .card-azul { border-left: 4px solid var(--azul); }
+  .card-verde { border-left: 4px solid var(--verde); }
+  .card-naranja { border-left: 4px solid var(--naranja); }
+  .card-amarillo { border-left: 4px solid var(--amarillo); }
+  .card-gris { border-left: 4px solid var(--gris); }
+
+  .card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--gris);
+  }
+
+  .card p, .card li { font-size: 14px; color: var(--texto-sec); margin-bottom: 0.4rem; }
+  .card ul, .card ol { padding-left: 1.2rem; }
+
+  .highlight {
+    background: #FFFDE7;
+    border: 1px solid #F9A825;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    font-size: 14px;
+  }
+
+  .highlight strong { color: #E65100; }
+
+  .alert-rojo {
+    background: var(--rojo-claro);
+    border: 1px solid var(--rojo);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    font-size: 14px;
+    color: #7B241C;
+  }
+
+  .alert-verde {
+    background: var(--verde-claro);
+    border: 1px solid var(--verde);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    font-size: 14px;
+    color: #145A32;
+  }
+
+  .formula {
+    background: #1A1A2E;
+    color: #00FF7F;
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    margin: 1rem 0;
+    letter-spacing: 1px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 1rem 0;
+  }
+
+  th {
+    background: var(--azul);
+    color: white;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--borde);
+  }
+
+  tr:nth-child(even) td { background: var(--gris-claro); }
+  tr:hover td { background: var(--azul-claro); }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 4px;
+  }
+
+  .tag-rojo { background: var(--rojo-claro); color: var(--rojo); }
+  .tag-azul { background: var(--azul-claro); color: var(--azul); }
+  .tag-verde { background: var(--verde-claro); color: var(--verde); }
+  .tag-naranja { background: var(--naranja-claro); color: var(--naranja); }
+
+  .step-box {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    background: var(--gris-claro);
+  }
+
+  .step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--azul);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .step-content { flex: 1; }
+  .step-content strong { display: block; font-size: 14px; margin-bottom: 2px; }
+  .step-content span { font-size: 13px; color: var(--texto-sec); }
+
+  .quiz-item {
+    background: white;
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--sombra);
+  }
+
+  .quiz-question {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 0.75rem;
+    color: var(--gris);
+  }
+
+  .quiz-options { list-style: none; padding: 0; }
+
+  .quiz-options li {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--borde);
+    margin-bottom: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .quiz-options li:hover { background: var(--azul-claro); border-color: var(--azul); }
+  .quiz-options li.correct { background: var(--verde-claro); border-color: var(--verde); color: #145A32; font-weight: 600; }
+  .quiz-options li.wrong { background: var(--rojo-claro); border-color: var(--rojo); color: #7B241C; }
+
+  .quiz-answer {
+    display: none;
+    background: var(--verde-claro);
+    border: 1px solid var(--verde);
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-top: 0.75rem;
+    font-size: 13px;
+    color: #145A32;
+  }
+
+  .show-answer-btn {
+    background: var(--azul);
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+  }
+
+  .show-answer-btn:hover { background: #154360; }
+
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--borde);
+    font-size: 14px;
+  }
+
+  .checklist-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    accent-color: var(--verde);
+  }
+
+  .checklist-item label { cursor: pointer; line-height: 1.5; }
+
+  .binary-table {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 2px;
+    margin: 1rem 0;
+    max-width: 400px;
+  }
+
+  .binary-cell {
+    text-align: center;
+    padding: 6px 4px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  .binary-cell .val { font-weight: 700; font-size: 14px; display: block; }
+  .binary-cell .bit { font-size: 10px; color: var(--texto-sec); display: block; }
+
+  .binary-cell.red-cell { background: var(--rojo-claro); }
+  .binary-cell.blue-cell { background: var(--azul-claro); }
+
+  .analogy-box {
+    background: linear-gradient(135deg, #EBF5FB, #D6EAF8);
+    border: 1px solid #AED6F1;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    font-size: 14px;
+    position: relative;
+  }
+
+  .analogy-box::before {
+    content: '💡 ANALOGÍA';
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--azul);
+    display: block;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+  }
+
+  .example-box {
+    background: linear-gradient(135deg, #EAFAF1, #D5F5E3);
+    border: 1px solid #A9DFBF;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    font-size: 14px;
+  }
+
+  .example-box::before {
+    content: '📌 EJEMPLO PRÁCTICO';
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--verde);
+    display: block;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+  }
+
+  .warning-box {
+    background: #FEF9E7;
+    border: 1px solid #F9A825;
+    border-left: 4px solid #E65100;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    font-size: 14px;
+  }
+
+  .warning-box::before {
+    content: '⚠️ ERROR COMÚN';
+    font-size: 11px;
+    font-weight: 700;
+    color: #E65100;
+    display: block;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+  }
+
+  .subnet-calc {
+    background: #1A1A2E;
+    color: #E8E8E8;
+    border-radius: 12px;
+    padding: 1.5rem;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    margin: 1rem 0;
+    line-height: 2;
+  }
+
+  .subnet-calc .comment { color: #6A9F58; }
+  .subnet-calc .keyword { color: #5B9BD5; }
+  .subnet-calc .value { color: #FFD700; }
+  .subnet-calc .result { color: #00FF7F; font-weight: 700; }
+
+  .progress-bar {
+    height: 6px;
+    background: var(--borde);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--verde);
+    transition: width 0.5s ease;
+  }
+
+  footer {
+    background: var(--gris);
+    color: white;
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 13px;
+    opacity: 0.9;
+  }
+
+  @media (max-width: 600px) {
+    .header h1 { font-size: 1.4rem; }
+    .nav-tabs { padding: 0.75rem 1rem; }
+    .container { padding: 1.25rem 1rem; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="badge">📚 INACAP · Sistemas Operativos · Otoño 2026</div>
+  <h1>Apunte Pre-Prueba<br>Direccionamiento IP y Subredes</h1>
+  <p>Unidad 1 · TCP/IP · FLSM · VLSM · Sistemas Numéricos</p>
+</div>
+
+<nav class="nav-tabs">
+  <a href="#s1" class="nav-tab active">📋 Resumen</a>
+  <a href="#s2" class="nav-tab">🔑 Conceptos</a>
+  <a href="#s3" class="nav-tab">💡 Explicaciones</a>
+  <a href="#s4" class="nav-tab">⚡ Lo Crítico</a>
+  <a href="#s5" class="nav-tab">🧮 Ejercicios</a>
+  <a href="#s6" class="nav-tab">❌ Errores</a>
+  <a href="#s7" class="nav-tab">✅ Checklist</a>
+  <a href="#s8" class="nav-tab">❓ Mini Prueba</a>
+</nav>
+
+<div class="container">
+
+<!-- ===== SECCIÓN 1: RESUMEN GENERAL ===== -->
+<section id="s1" class="s1">
+  <div class="section-title">
+    <div class="section-icon">📋</div>
+    <h2>1. Resumen General</h2>
+  </div>
+
+  <div class="card card-azul">
+    <h3>¿De qué trata esta unidad?</h3>
+    <p>Esta unidad aborda cómo se organizan y dividen las redes IP. El objetivo es que seas capaz de <strong>calcular subredes, asignar rangos de IP, identificar máscaras y elegir entre FLSM o VLSM</strong> según el escenario.</p>
+  </div>
+
+  <div class="grid-3">
+    <div class="card card-azul">
+      <h3>🔢 Sistemas Numéricos</h3>
+      <ul>
+        <li>Binario (base 2): 0 y 1</li>
+        <li>Decimal (base 10): 0-9</li>
+        <li>Hexadecimal (base 16): 0-9, A-F</li>
+        <li>Conversiones entre todos</li>
+      </ul>
+    </div>
+    <div class="card card-verde">
+      <h3>🌐 Direccionamiento IP</h3>
+      <ul>
+        <li>IPv4: 32 bits, 4 octetos</li>
+        <li>Clases A, B, C</li>
+        <li>Máscaras de subred</li>
+        <li>Red, host, broadcast</li>
+      </ul>
+    </div>
+    <div class="card card-naranja">
+      <h3>🔀 Subnetting</h3>
+      <ul>
+        <li>FLSM: subredes iguales</li>
+        <li>VLSM: subredes variables</li>
+        <li>Cálculo de saltos</li>
+        <li>Asignación de rangos</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <strong>Evaluación Sumativa 1 (15%): Prueba escrita</strong> con ítems de respuesta breve o extensa sobre esta unidad. ¡Es teoría + cálculos!
+  </div>
+
+  <div class="card card-gris">
+    <h3>🗺️ Mapa de Contenidos</h3>
+    <table>
+      <tr><th>Tema</th><th>Contenido clave</th><th>Importancia</th></tr>
+      <tr><td>Binario ↔ Decimal</td><td>Conversión manual con tabla de bits</td><td><span class="tag tag-rojo">Alta</span></td></tr>
+      <tr><td>Binario ↔ Hexadecimal</td><td>Grupos de 4 bits = 1 dígito hex</td><td><span class="tag tag-naranja">Media</span></td></tr>
+      <tr><td>Clases IP</td><td>Rangos A/B/C, máscaras, hosts</td><td><span class="tag tag-rojo">Alta</span></td></tr>
+      <tr><td>Máscara / CIDR</td><td>255.x.x.x ↔ /n conversión</td><td><span class="tag tag-rojo">Alta</span></td></tr>
+      <tr><td>FLSM</td><td>Subredes iguales, salto fijo</td><td><span class="tag tag-rojo">Alta</span></td></tr>
+      <tr><td>VLSM</td><td>Subredes variables por tamaño</td><td><span class="tag tag-rojo">Alta</span></td></tr>
+      <tr><td>Red / Broadcast / Hosts</td><td>Primera y última IP, fórmula 2ⁿ−2</td><td><span class="tag tag-rojo">Alta</span></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ===== SECCIÓN 2: CONCEPTOS CLAVE ===== -->
+<section id="s2" class="s2">
+  <div class="section-title">
+    <div class="section-icon">🔑</div>
+    <h2>2. Conceptos Clave (Glosario)</h2>
+  </div>
+
+  <div class="grid-2">
+    <div class="card card-azul">
+      <h3>Dirección IP (IPv4)</h3>
+      <p>Número de <strong>32 bits</strong> dividido en 4 octetos (grupos de 8 bits) separados por puntos. Cada octeto va de 0 a 255. Ejemplo: <code>192.168.1.10</code></p>
+    </div>
+    <div class="card card-azul">
+      <h3>Máscara de Subred</h3>
+      <p>Número de 32 bits que indica qué parte de la IP es red (bits en 1) y qué parte es host (bits en 0). Ejemplo: <code>255.255.255.0</code></p>
+    </div>
+    <div class="card card-verde">
+      <h3>CIDR (Notación /n)</h3>
+      <p>Forma compacta de expresar la máscara. El número indica cuántos bits son de red. Ejemplo: <code>/24</code> = 255.255.255.0 (24 unos)</p>
+    </div>
+    <div class="card card-verde">
+      <h3>Dirección de Red</h3>
+      <p>Primera IP del bloque. Todos los bits de host en 0. <strong>No se puede asignar a dispositivos.</strong> Identifica la subred.</p>
+    </div>
+    <div class="card card-naranja">
+      <h3>Dirección de Broadcast</h3>
+      <p>Última IP del bloque. Todos los bits de host en 1. <strong>No se puede asignar a dispositivos.</strong> Permite enviar mensajes a todos los hosts.</p>
+    </div>
+    <div class="card card-naranja">
+      <h3>Hosts Válidos</h3>
+      <p>IPs entre la dirección de red y el broadcast. Fórmula: <strong>2ⁿ − 2</strong>, donde n = bits de host.</p>
+    </div>
+    <div class="card card-rojo">
+      <h3>FLSM</h3>
+      <p><strong>Fixed Length Subnet Mask.</strong> Todas las subredes tienen el mismo tamaño e idéntica máscara. Fácil de calcular pero desperdicia IPs.</p>
+    </div>
+    <div class="card card-rojo">
+      <h3>VLSM</h3>
+      <p><strong>Variable Length Subnet Mask.</strong> Cada subred tiene un tamaño diferente según necesidad. Eficiente pero más complejo. Siempre ordenar de mayor a menor.</p>
+    </div>
+    <div class="card card-gris">
+      <h3>Subnetting (Subneteo)</h3>
+      <p>Técnica de dividir una red grande en subredes más pequeñas. Se "toman" bits de la parte de host para crear más redes.</p>
+    </div>
+    <div class="card card-gris">
+      <h3>Salto (Incremento)</h3>
+      <p>Diferencia entre el inicio de cada subred. Se calcula como: <strong>256 − valor decimal del último octeto de la máscara</strong>.</p>
+    </div>
+  </div>
+
+  <div class="card card-azul">
+    <h3>Tabla de Valores Binarios — ¡Memoriza esto!</h3>
+    <div class="binary-table">
+      <div class="binary-cell red-cell"><span class="val">128</span><span class="bit">bit 7</span></div>
+      <div class="binary-cell red-cell"><span class="val">64</span><span class="bit">bit 6</span></div>
+      <div class="binary-cell red-cell"><span class="val">32</span><span class="bit">bit 5</span></div>
+      <div class="binary-cell red-cell"><span class="val">16</span><span class="bit">bit 4</span></div>
+      <div class="binary-cell blue-cell"><span class="val">8</span><span class="bit">bit 3</span></div>
+      <div class="binary-cell blue-cell"><span class="val">4</span><span class="bit">bit 2</span></div>
+      <div class="binary-cell blue-cell"><span class="val">2</span><span class="bit">bit 1</span></div>
+      <div class="binary-cell blue-cell"><span class="val">1</span><span class="bit">bit 0</span></div>
+    </div>
+    <p style="font-size:13px; color: var(--texto-sec);">Sumar los valores donde el bit es 1. Ejemplo: 192 = 128+64 = <strong>11000000</strong></p>
+  </div>
+</section>
+
+<!-- ===== SECCIÓN 3: EXPLICACIONES SIMPLIFICADAS ===== -->
+<section id="s3" class="s3">
+  <div class="section-title">
+    <div class="section-icon">💡</div>
+    <h2>3. Explicaciones Simplificadas</h2>
+  </div>
+
+  <div class="card card-azul">
+    <h3>📱 ¿Qué es una IP? — Desde Cero</h3>
+    <div class="analogy-box">
+      Una dirección IP es como el número de teléfono de tu computadora. Así como cada teléfono tiene un número único para recibir llamadas, cada dispositivo en red tiene una IP para comunicarse. La diferencia: las IPs públicas no se repiten en todo el mundo (como un número de pasaporte), pero las IPs privadas sí pueden repetirse en distintas redes hogareñas.
+    </div>
+  </div>
+
+  <div class="card card-verde">
+    <h3>🏠 Clases de IP — La Analogía del Edificio</h3>
+    <div class="analogy-box">
+      Imagina la IP como una dirección postal: "País . Ciudad . Calle . Número"<br>
+      • <strong>Clase A</strong> = Ciudad gigante: 1 número para el país, 3 para la dirección específica → muchos vecinos (16 millones de hosts)<br>
+      • <strong>Clase B</strong> = Ciudad mediana: 2 números para el país/ciudad, 2 para la dirección → capacidad media (65.534 hosts)<br>
+      • <strong>Clase C</strong> = Ciudad pequeña: 3 números para el país/ciudad/calle, 1 para la casa → pocos vecinos (254 hosts)
+    </div>
+    <table>
+      <tr><th>Clase</th><th>Primer octeto</th><th>Máscara default</th><th>CIDR</th><th>Hosts máx.</th><th>Redes</th></tr>
+      <tr><td><strong>A</strong></td><td>1 – 126</td><td>255.0.0.0</td><td>/8</td><td>16.777.214</td><td>128</td></tr>
+      <tr><td><strong>B</strong></td><td>128 – 191</td><td>255.255.0.0</td><td>/16</td><td>65.534</td><td>16.384</td></tr>
+      <tr><td><strong>C</strong></td><td>192 – 223</td><td>255.255.255.0</td><td>/24</td><td>254</td><td>2.097.152</td></tr>
+    </table>
+    <p style="font-size:13px;margin-top:8px;color:var(--rojo);font-weight:600;">⚠️ La clase se determina mirando el PRIMER OCTETO de la IP.</p>
+  </div>
+
+  <div class="card card-naranja">
+    <h3>🔢 Conversiones Numéricas — Paso a Paso</h3>
+
+    <div style="margin-bottom: 1rem;">
+      <strong style="display:block;margin-bottom:6px;">Binario → Decimal</strong>
+      <p style="font-size:13px;">Multiplica cada bit por su potencia de 2 (de derecha a izquierda) y suma.</p>
+      <div class="example-box">
+        10101010 → 128+0+32+0+8+0+2+0 = <strong>170</strong><br>
+        11000000 → 128+64+0+0+0+0+0+0 = <strong>192</strong><br>
+        11111111 → 128+64+32+16+8+4+2+1 = <strong>255</strong>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <strong style="display:block;margin-bottom:6px;">Decimal → Binario</strong>
+      <p style="font-size:13px;">Divide sucesivamente entre 2, anota el residuo. Lee de abajo hacia arriba.</p>
+      <div class="example-box">
+        25 ÷ 2 = 12 (r=1) → 12 ÷ 2 = 6 (r=0) → 6 ÷ 2 = 3 (r=0) → 3 ÷ 2 = 1 (r=1) → 1 ÷ 2 = 0 (r=1)<br>
+        Leído al revés: <strong>11001</strong> → con 8 bits: <strong>00011001</strong>
+      </div>
+    </div>
+
+    <div>
+      <strong style="display:block;margin-bottom:6px;">Binario → Hexadecimal</strong>
+      <p style="font-size:13px;">Agrupa de 4 en 4 bits desde la derecha, convierte cada grupo.</p>
+      <div class="example-box">
+        10101111 → 1010 | 1111 → A | F = <strong>AF</strong><br>
+        Tabla: 0000=0, 0001=1 … 1001=9, 1010=A, 1011=B, 1100=C, 1101=D, 1110=E, 1111=F
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-rojo">
+    <h3>🔀 ¿Qué es la Máscara? — La Analogía del Código Postal</h3>
+    <div class="analogy-box">
+      Imagina que tienes la dirección "192.168.5.23" y la máscara "255.255.255.0". La máscara te dice: "los primeros 3 grupos (192.168.5) son el BARRIO (red), y el último número (23) es el NÚMERO DE CASA (host)". Todos los que viven en el mismo barrio comparten los 3 primeros números.
+    </div>
+    <p style="font-size:13px;">La máscara en binario: los <strong>1s</strong> identifican la parte de red, los <strong>0s</strong> identifican la parte de host.</p>
+    <div class="formula">255.255.255.0 → 11111111.11111111.11111111.00000000 → /24</div>
+  </div>
+
+  <div class="card card-gris">
+    <h3>✂️ Subnetting — La Analogía del Terreno</h3>
+    <div class="analogy-box">
+      Tienes un terreno grande (red 192.168.1.0/24 = 256 direcciones). En lugar de tenerlo sin dividir, decides construir 4 casas (subredes) con sus propios cercos. Cada casa tiene su propio rango de números de cuartos (hosts). Para dividirlo en 4, necesitas "tomar" 2 bits del espacio de host (2² = 4 parcelas), lo que cambia tu máscara de /24 a /26.
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECCIÓN 4: PUNTOS CRÍTICOS ===== -->
+<section id="s4" class="s4">
+  <div class="section-title">
+    <div class="section-icon">⚡</div>
+    <h2>4. Puntos Críticos para la Prueba</h2>
+  </div>
+
+  <div class="alert-rojo">
+    <strong>🚨 FÓRMULAS QUE NO PUEDES OLVIDAR:</strong>
+  </div>
+
+  <div class="grid-2">
+    <div class="formula">Hosts = 2ⁿ − 2<br><span style="font-size:12px;color:#aaa;">(n = bits de host)</span></div>
+    <div class="formula">Subredes = 2ⁿ<br><span style="font-size:12px;color:#aaa;">(n = bits prestados)</span></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="formula">Salto = 256 − máscara decimal<br><span style="font-size:12px;color:#aaa;">(del último octeto)</span></div>
+    <div class="formula">Nueva máscara = /X + n bits<br><span style="font-size:12px;color:#aaa;">(n = bits prestados)</span></div>
+  </div>
+
+  <div class="card card-rojo">
+    <h3>📌 Pasos del Subnetting FLSM — Procedimiento Exacto</h3>
+    <div class="step-box">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <strong>Identificar la red base</strong>
+        <span>Ej: 192.168.1.0/24 con máscara 255.255.255.0</span>
+      </div>
+    </div>
+    <div class="step-box">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <strong>Calcular bits necesarios</strong>
+        <span>¿Cuántas subredes necesitas? Busca 2ⁿ ≥ N subredes. Ej: 4 subredes → 2² = 4 → n = 2 bits</span>
+      </div>
+    </div>
+    <div class="step-box">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <strong>Calcular nueva máscara</strong>
+        <span>/24 + 2 = /26 → 255.255.255.192</span>
+      </div>
+    </div>
+    <div class="step-box">
+      <div class="step-number">4</div>
+      <div class="step-content">
+        <strong>Calcular salto</strong>
+        <span>256 − 192 = 64 → Las subredes avanzan de 64 en 64</span>
+      </div>
+    </div>
+    <div class="step-box">
+      <div class="step-number">5</div>
+      <div class="step-content">
+        <strong>Asignar rangos y completar tabla</strong>
+        <span>Red, Primer host, Último host, Broadcast</span>
+      </div>
+    </div>
+    <div class="step-box">
+      <div class="step-number">6</div>
+      <div class="step-content">
+        <strong>Calcular hosts por subred</strong>
+        <span>32 − 26 = 6 bits de host → 2⁶ − 2 = 62 hosts</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-rojo">
+    <h3>📌 Pasos del Subnetting VLSM — Procedimiento Exacto</h3>
+    <div class="step-box">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <strong>Ordenar de MAYOR a MENOR número de hosts</strong>
+        <span>Siempre empezar por la subred más grande</span>
+      </div>
+    </div>
+    <div class="step-box">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <strong>Para cada subred: calcular máscara usando 2ⁿ − 2 ≥ hosts requeridos</strong>
+        <span>Busca el n mínimo que satisfaga la cantidad de hosts</span>
+      </div>
+    </div>
+    <div class="step-box">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <strong>Asignar rangos consecutivos sin solapamiento</strong>
+        <span>Cada subred empieza donde termina la anterior (broadcast + 1)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-azul">
+    <h3>🎯 Tabla de Máscaras Más Importantes</h3>
+    <table>
+      <tr><th>CIDR</th><th>Máscara decimal</th><th>Último octeto (bin)</th><th>Hosts útiles</th><th>Salto</th></tr>
+      <tr><td>/24</td><td>255.255.255.0</td><td>00000000</td><td>254</td><td>256</td></tr>
+      <tr><td>/25</td><td>255.255.255.128</td><td>10000000</td><td>126</td><td>128</td></tr>
+      <tr><td>/26</td><td>255.255.255.192</td><td>11000000</td><td>62</td><td>64</td></tr>
+      <tr><td>/27</td><td>255.255.255.224</td><td>11100000</td><td>30</td><td>32</td></tr>
+      <tr><td>/28</td><td>255.255.255.240</td><td>11110000</td><td>14</td><td>16</td></tr>
+      <tr><td>/29</td><td>255.255.255.248</td><td>11111000</td><td>6</td><td>8</td></tr>
+      <tr><td>/30</td><td>255.255.255.252</td><td>11111100</td><td>2</td><td>4</td></tr>
+    </table>
+  </div>
+
+  <div class="card card-verde">
+    <h3>💬 Posibles Preguntas Teóricas en la Prueba</h3>
+    <ul style="list-style:disc;padding-left:1.2rem;font-size:14px;line-height:2;">
+      <li>¿Qué es el subnetting y para qué sirve?</li>
+      <li>¿Cuál es la diferencia entre FLSM y VLSM?</li>
+      <li>¿Qué son la dirección de red y de broadcast? ¿Se pueden asignar a hosts?</li>
+      <li>¿Cómo se determina la clase de una dirección IP?</li>
+      <li>¿Cuántos hosts útiles tiene una red /27?</li>
+      <li>¿Para qué se usa el VLSM en comparación al FLSM?</li>
+      <li>¿Qué ventajas tiene el subnetting en ciberseguridad?</li>
+      <li>Explique la fórmula 2ⁿ − 2 y por qué se resta 2.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== SECCIÓN 5: EJERCICIOS ===== -->
+<section id="s5" class="s5">
+  <div class="section-title">
+    <div class="section-icon">🧮</div>
+    <h2>5. Ejercicios Aplicados Resueltos</h2>
+  </div>
+
+  <div class="card card-azul">
+    <h3>Ejercicio 1 — FLSM Clase C: 4 subredes iguales</h3>
+    <p style="font-size:13px;margin-bottom:1rem;"><strong>Red:</strong> 192.168.5.0/24 | <strong>Objetivo:</strong> Crear 4 subredes iguales</p>
+    <div class="subnet-calc">
+      <span class="comment"># Paso 1: Calcular bits necesarios</span><br>
+      2^n ≥ 4 → <span class="value">n = 2 bits</span><br><br>
+      <span class="comment"># Paso 2: Nueva máscara</span><br>
+      /24 + 2 = <span class="result">/26</span> → 255.255.255.<span class="result">192</span><br><br>
+      <span class="comment"># Paso 3: Hosts por subred</span><br>
+      32 - 26 = 6 bits de host → 2^6 - 2 = <span class="result">62 hosts</span><br><br>
+      <span class="comment"># Paso 4: Salto</span><br>
+      256 - 192 = <span class="result">64</span> (subredes avanzan de 64 en 64)<br>
+    </div>
+    <table>
+      <tr><th>Subred</th><th>Red</th><th>Primer Host</th><th>Último Host</th><th>Broadcast</th><th>Hosts útiles</th></tr>
+      <tr><td>1</td><td>192.168.5.0</td><td>192.168.5.1</td><td>192.168.5.62</td><td>192.168.5.63</td><td>62</td></tr>
+      <tr><td>2</td><td>192.168.5.64</td><td>192.168.5.65</td><td>192.168.5.126</td><td>192.168.5.127</td><td>62</td></tr>
+      <tr><td>3</td><td>192.168.5.128</td><td>192.168.5.129</td><td>192.168.5.190</td><td>192.168.5.191</td><td>62</td></tr>
+      <tr><td>4</td><td>192.168.5.192</td><td>192.168.5.193</td><td>192.168.5.254</td><td>192.168.5.255</td><td>62</td></tr>
+    </table>
+  </div>
+
+  <div class="card card-verde">
+    <h3>Ejercicio 2 — FLSM Clase A: 8 subredes</h3>
+    <p style="font-size:13px;margin-bottom:1rem;"><strong>Red:</strong> 10.0.0.0/24 | <strong>Objetivo:</strong> Crear 8 subredes iguales</p>
+    <div class="subnet-calc">
+      2^n ≥ 8 → <span class="value">n = 3 bits</span><br>
+      /24 + 3 = <span class="result">/27</span> → 255.255.255.<span class="result">224</span><br>
+      Hosts: 2^5 - 2 = <span class="result">30 hosts</span><br>
+      Salto: 256 - 224 = <span class="result">32</span>
+    </div>
+    <table>
+      <tr><th>Subred</th><th>Red</th><th>Primer Host</th><th>Último Host</th><th>Broadcast</th></tr>
+      <tr><td>1</td><td>10.0.0.0</td><td>10.0.0.1</td><td>10.0.0.30</td><td>10.0.0.31</td></tr>
+      <tr><td>2</td><td>10.0.0.32</td><td>10.0.0.33</td><td>10.0.0.62</td><td>10.0.0.63</td></tr>
+      <tr><td>3</td><td>10.0.0.64</td><td>10.0.0.65</td><td>10.0.0.94</td><td>10.0.0.95</td></tr>
+      <tr><td>4</td><td>10.0.0.96</td><td>10.0.0.97</td><td>10.0.0.126</td><td>10.0.0.127</td></tr>
+      <tr><td>5</td><td>10.0.0.128</td><td>10.0.0.129</td><td>10.0.0.158</td><td>10.0.0.159</td></tr>
+      <tr><td>6</td><td>10.0.0.160</td><td>10.0.0.161</td><td>10.0.0.190</td><td>10.0.0.191</td></tr>
+      <tr><td>7</td><td>10.0.0.192</td><td>10.0.0.193</td><td>10.0.0.222</td><td>10.0.0.223</td></tr>
+      <tr><td>8</td><td>10.0.0.224</td><td>10.0.0.225</td><td>10.0.0.254</td><td>10.0.0.255</td></tr>
+    </table>
+  </div>
+
+  <div class="card card-naranja">
+    <h3>Ejercicio 3 — VLSM: Departamentos con distintos hosts</h3>
+    <p style="font-size:13px;margin-bottom:1rem;"><strong>Red:</strong> 192.168.10.0/24 | <strong>Necesidades:</strong> 100, 50, 10, 2 hosts</p>
+    <div class="subnet-calc">
+      <span class="comment"># Paso 1: Ordenar de mayor a menor</span><br>
+      100 hosts → 50 hosts → 10 hosts → 2 hosts<br><br>
+      <span class="comment"># 100 hosts: 2^7 - 2 = 126 ≥ 100 → /25</span><br>
+      Rango: 192.168.10.0 – 192.168.10.127 (salto 128)<br><br>
+      <span class="comment"># 50 hosts: 2^6 - 2 = 62 ≥ 50 → /26</span><br>
+      Rango: 192.168.10.128 – 192.168.10.191 (salto 64)<br><br>
+      <span class="comment"># 10 hosts: 2^4 - 2 = 14 ≥ 10 → /28</span><br>
+      Rango: 192.168.10.192 – 192.168.10.207 (salto 16)<br><br>
+      <span class="comment"># 2 hosts: 2^2 - 2 = 2 ≥ 2 → /30</span><br>
+      Rango: 192.168.10.208 – 192.168.10.211 (salto 4)
+    </div>
+    <table>
+      <tr><th>Subred</th><th>Red</th><th>Máscara</th><th>Primer Host</th><th>Último Host</th><th>Broadcast</th><th>Hosts válidos</th></tr>
+      <tr><td>100 hosts</td><td>192.168.10.0</td><td>/25</td><td>192.168.10.1</td><td>192.168.10.126</td><td>192.168.10.127</td><td>126</td></tr>
+      <tr><td>50 hosts</td><td>192.168.10.128</td><td>/26</td><td>192.168.10.129</td><td>192.168.10.190</td><td>192.168.10.191</td><td>62</td></tr>
+      <tr><td>10 hosts</td><td>192.168.10.192</td><td>/28</td><td>192.168.10.193</td><td>192.168.10.206</td><td>192.168.10.207</td><td>14</td></tr>
+      <tr><td>2 hosts</td><td>192.168.10.208</td><td>/30</td><td>192.168.10.209</td><td>192.168.10.210</td><td>192.168.10.211</td><td>2</td></tr>
+    </table>
+  </div>
+
+  <div class="card card-rojo">
+    <h3>Ejercicio 4 — VLSM: Departamentos Ventas e IT</h3>
+    <p style="font-size:13px;margin-bottom:1rem;"><strong>Red:</strong> 192.168.10.0/24 | <strong>Ventas:</strong> 30 hosts | <strong>IT:</strong> 12 hosts</p>
+    <div class="subnet-calc">
+      <span class="comment"># Ventas: 2^5 - 2 = 30 ≥ 30 → /27 → máscara 255.255.255.224</span><br>
+      Red: 192.168.10.0 | Broadcast: 192.168.10.31<br><br>
+      <span class="comment"># IT: 2^4 - 2 = 14 ≥ 12 → /28 → máscara 255.255.255.240</span><br>
+      Red: 192.168.10.32 | Broadcast: 192.168.10.47
+    </div>
+    <table>
+      <tr><th>Depto.</th><th>Red</th><th>Máscara</th><th>Primer Host</th><th>Último Host</th><th>Broadcast</th></tr>
+      <tr><td>Ventas</td><td>192.168.10.0</td><td>/27</td><td>192.168.10.1</td><td>192.168.10.30</td><td>192.168.10.31</td></tr>
+      <tr><td>IT</td><td>192.168.10.32</td><td>/28</td><td>192.168.10.33</td><td>192.168.10.46</td><td>192.168.10.47</td></tr>
+    </table>
+  </div>
+
+  <div class="card card-gris">
+    <h3>Ejercicio 5 — Conversiones Numéricas (respuestas)</h3>
+    <div class="grid-2">
+      <div>
+        <strong style="font-size:13px;display:block;margin-bottom:6px;">Binario → Decimal:</strong>
+        <ul style="font-size:13px;list-style:disc;padding-left:1rem;">
+          <li>10101010 = <strong>170</strong></li>
+          <li>11001100 = <strong>204</strong></li>
+          <li>01101101 = <strong>109</strong></li>
+        </ul>
+      </div>
+      <div>
+        <strong style="font-size:13px;display:block;margin-bottom:6px;">Decimal → Binario:</strong>
+        <ul style="font-size:13px;list-style:disc;padding-left:1rem;">
+          <li>25 = <strong>00011001</strong></li>
+          <li>50 = <strong>00110010</strong></li>
+          <li>100 = <strong>01100100</strong></li>
+        </ul>
+      </div>
+      <div>
+        <strong style="font-size:13px;display:block;margin-bottom:6px;">Binario → Hexadecimal:</strong>
+        <ul style="font-size:13px;list-style:disc;padding-left:1rem;">
+          <li>10101111 = <strong>AF</strong></li>
+          <li>11001010 = <strong>CA</strong></li>
+          <li>01101110 = <strong>6E</strong></li>
+        </ul>
+      </div>
+      <div>
+        <strong style="font-size:13px;display:block;margin-bottom:6px;">Hexadecimal → Binario:</strong>
+        <ul style="font-size:13px;list-style:disc;padding-left:1rem;">
+          <li>A3 = <strong>10100011</strong></li>
+          <li>7F = <strong>01111111</strong></li>
+          <li>2D = <strong>00101101</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECCIÓN 6: ERRORES COMUNES ===== -->
+<section id="s6" class="s6">
+  <div class="section-title">
+    <div class="section-icon">❌</div>
+    <h2>6. Errores Comunes en Pruebas</h2>
+  </div>
+
+  <div class="warning-box">
+    <strong>Error 1 — Olvidar restar 2 en la fórmula de hosts</strong><br>
+    Muchos calculan 2ⁿ y no 2ⁿ−2. Recuerda: siempre se restan la dirección de red y la de broadcast. Si una /26 tiene 6 bits de host → 2⁶ = 64 total, pero solo <strong>62 hosts útiles</strong>.
+  </div>
+
+  <div class="warning-box">
+    <strong>Error 2 — En VLSM, no ordenar de mayor a menor</strong><br>
+    Si empiezas por la subred pequeña, te quedarás sin espacio para la grande. Siempre: <strong>primero la subred con más hosts</strong>, luego las siguientes.
+  </div>
+
+  <div class="warning-box">
+    <strong>Error 3 — Confundir la dirección de red con el primer host</strong><br>
+    Si la red es 192.168.1.64/26, el PRIMER HOST es 192.168.1.<strong>65</strong>, NO 192.168.1.64. La .64 es la dirección de red (reservada).
+  </div>
+
+  <div class="warning-box">
+    <strong>Error 4 — Calcular mal el salto</strong><br>
+    El salto NO es el valor de la máscara, es <strong>256 menos el valor del último octeto</strong>. Para /26 (máscara 192): 256 − 192 = <strong>64</strong>, no 192.
+  </div>
+
+  <div class="warning-box">
+    <strong>Error 5 — Determinar mal la clase de una IP</strong><br>
+    La clase se determina por el <strong>primer octeto</strong>:<br>
+    1-126 = Clase A | 128-191 = Clase B | 192-223 = Clase C<br>
+    ¡Ojo! El 127 está reservado (loopback, no es clase A ni B).
+  </div>
+
+  <div class="warning-box">
+    <strong>Error 6 — Confundir bits de host con bits de red para la máscara</strong><br>
+    Si tienes /26 → 32 bits totales − 26 bits de red = <strong>6 bits de HOST</strong>. Esos 6 bits van en la fórmula 2⁶ − 2. No uses 26.
+  </div>
+
+  <div class="warning-box">
+    <strong>Error 7 — En FLSM: la nueva máscara se SUMA, no multiplica</strong><br>
+    Si la red base es /24 y necesitas 3 bits → /24 + 3 = /27. No es /24 × 3.
+  </div>
+
+  <div class="warning-box">
+    <strong>Error 8 — Pensar que el broadcast es la red de la siguiente subred</strong><br>
+    En la red 192.168.1.0/26, el broadcast es 192.168.1.<strong>63</strong> (el último del bloque), NO 192.168.1.64 (esa es la próxima red).
+  </div>
+</section>
+
+<!-- ===== SECCIÓN 7: CHECKLIST ===== -->
+<section id="s7" class="s7">
+  <div class="section-title">
+    <div class="section-icon">✅</div>
+    <h2>7. Mini Guía de Repaso Rápido</h2>
+  </div>
+
+  <div class="alert-verde">
+    Marca cada ítem a medida que lo domines. Meta: todos marcados antes de la prueba.
+  </div>
+
+  <div class="card" id="checklist-card">
+    <h3>📋 Lista de Verificación Pre-Prueba</h3>
+    <div id="progress-display" style="font-size:13px;color:var(--texto-sec);margin-bottom:8px;">Progreso: <span id="progress-count">0</span> / 20</div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div style="margin-top:1rem;">
+
+      <p style="font-size:12px;font-weight:700;color:var(--azul);margin:0.75rem 0 0.25rem;text-transform:uppercase;">Sistemas Numéricos</p>
+      <div class="checklist-item"><input type="checkbox" id="c1" onchange="updateProgress()"><label for="c1">Sé convertir binario → decimal y viceversa sin calculadora</label></div>
+      <div class="checklist-item"><input type="checkbox" id="c2" onchange="updateProgress()"><label for="c2">Sé convertir binario → hexadecimal (grupos de 4 bits)</label></div>
+      <div class="checklist-item"><input type="checkbox" id="c3" onchange="updateProgress()"><label for="c3">Memoricé la tabla de valores: 128, 64, 32, 16, 8, 4, 2, 1</label></div>
+
+      <p style="font-size:12px;font-weight:700;color:var(--verde);margin:0.75rem 0 0.25rem;text-transform:uppercase;">Direccionamiento IP</p>
+      <div class="checklist-item"><input type="checkbox" id="c4" onchange="updateProgress()"><label for="c4">Identifico la clase de una IP mirando el primer octeto</label></div>
+      <div class="checklist-item"><input type="checkbox" id="c5" onchange="updateProgress()"><label for="c5">Conozco las máscaras por defecto de cada clase (A/B/C)</label></div>
+      <div class="checklist-item"><input type="checkbox" id="c6" onchange="updateProgress()"><label for="c6">Sé convertir máscara decimal a CIDR (/n) y viceversa</label></div>
+      <div class="checklist-item"><input type="checkbox" id="c7" onchange="updateProgress()"><label for="c7">Entiendo la diferencia entre red, broadcast y hosts válidos</label></div>
+      <div class="checklist-item"><input type="checkbox" id="c8" onchange="updateProgress()"><label for="c8">Aplico la fórmula 2ⁿ − 2 para calcular hosts útiles</label></div>
+
+      <p style="font-size:12px;font-weight:700;color:var(--naranja);margin:0.75rem 0 0.25rem;text-transform:uppercase;">FLSM</p>
+      <div class="checklist-item"><input type="checkbox" id="c9" onchange="updateProgress()"><label for="c9">Sé los 6 pasos del subnetting FLSM de memoria</label></div>
+      <div class="checklist-item"><input type="checkbox" id="c10" onchange="updateProgress()"><label for="c10">Sé calcular el salto: 256 − valor máscara</label></div>
+      <div class="checklist-item"><input type="checkbox" id="c11" onchange="updateProgress()"><label for="c11">Puedo completar una tabla de subredes FLSM sin errores</label></div>
+      <div class="checklist-item"><input type="checkbox" id="c12" onchange="updateProgress()"><label for="c12">Entiendo que todas las subredes FLSM tienen el mismo tamaño</label></div>
+
+      <p style="font-size:12px;font-weight:700;color:var(--rojo);margin:0.75rem 0 0.25rem;text-transform:uppercase;">VLSM</p>
+      <div class="checklist-item"><input type="checkbox" id="c13" onchange="updateProgress()"><label for="c13">Siempre ordeno de mayor a menor antes de calcular VLSM</label></div>
+      <div class="checklist-item"><input type="checkbox" id="c14" onchange="updateProgress()"><label for="c14">Para cada subred VLSM, uso 2ⁿ − 2 ≥ hosts requeridos</label></div>
+      <div class="checklist-item"><input type="checkbox" id="c15" onchange="updateProgress()"><label for="c15">Asigno rangos consecutivos sin solapar (inicio donde termina el anterior)</label></div>
+      <div class="checklist-item"><input type="checkbox" id="c16" onchange="updateProgress()"><label for="c16">Entiendo que VLSM evita desperdiciar IPs</label></div>
+
+      <p style="font-size:12px;font-weight:700;color:var(--gris);margin:0.75rem 0 0.25rem;text-transform:uppercase;">Comparación y Teoría</p>
+      <div class="checklist-item"><input type="checkbox" id="c17" onchange="updateProgress()"><label for="c17">Sé comparar FLSM vs VLSM (ventajas y desventajas)</label></div>
+      <div class="checklist-item"><input type="checkbox" id="c18" onchange="updateProgress()"><label for="c18">Conozco para qué sirve el subnetting en ciberseguridad</label></div>
+      <div class="checklist-item"><input type="checkbox" id="c19" onchange="updateProgress()"><label for="c19">Entiendo qué es un router y por qué se necesita entre subredes</label></div>
+      <div class="checklist-item"><input type="checkbox" id="c20" onchange="updateProgress()"><label for="c20">Memoricé la tabla de máscaras del /24 al /30</label></div>
+    </div>
+  </div>
+
+  <div class="card card-azul">
+    <h3>📊 Comparación Rápida FLSM vs VLSM</h3>
+    <table>
+      <tr><th>Característica</th><th>FLSM</th><th>VLSM</th></tr>
+      <tr><td>Tamaño subredes</td><td>Todas iguales</td><td>Diferentes tamaños</td></tr>
+      <tr><td>Máscara</td><td>Una sola para todas</td><td>Una diferente por subred</td></tr>
+      <tr><td>Hosts por subred</td><td>Todos iguales</td><td>Varía según necesidad</td></tr>
+      <tr><td>Facilidad de cálculo</td><td>Simple ✅</td><td>Más complejo ❌</td></tr>
+      <tr><td>Desperdicio de IPs</td><td>Mucho ❌</td><td>Mínimo ✅</td></tr>
+      <tr><td>Orden de cálculo</td><td>Cualquiera</td><td>Mayor → Menor (obligatorio)</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ===== SECCIÓN 8: MINI PRUEBA ===== -->
+<section id="s8" class="s8">
+  <div class="section-title">
+    <div class="section-icon">❓</div>
+    <h2>8. Preguntas Tipo Prueba</h2>
+  </div>
+
+  <div class="highlight">
+    Haz clic en cada opción para ver si es correcta o incorrecta. Luego usa el botón para ver la explicación.
+  </div>
+
+  <!-- Pregunta 1 -->
+  <div class="quiz-item">
+    <div class="quiz-question">1. ¿Cuántos hosts útiles tiene una red con máscara /26?</div>
+    <ul class="quiz-options">
+      <li onclick="checkAnswer(this, false)">a) 64</li>
+      <li onclick="checkAnswer(this, false)">b) 66</li>
+      <li onclick="checkAnswer(this, true)">c) 62</li>
+      <li onclick="checkAnswer(this, false)">d) 30</li>
+    </ul>
+    <button class="show-answer-btn" onclick="toggleAnswer(this)">Ver explicación</button>
+    <div class="quiz-answer">
+      /26 → 32 − 26 = 6 bits de host → 2⁶ − 2 = 64 − 2 = <strong>62 hosts útiles</strong>. Se restan 2 porque la dirección de red y la de broadcast no se pueden asignar a dispositivos.
+    </div>
+  </div>
+
+  <!-- Pregunta 2 -->
+  <div class="quiz-item">
+    <div class="quiz-question">2. La dirección IP 172.18.5.10, ¿de qué clase es?</div>
+    <ul class="quiz-options">
+      <li onclick="checkAnswer(this, false)">a) Clase A</li>
+      <li onclick="checkAnswer(this, true)">b) Clase B</li>
+      <li onclick="checkAnswer(this, false)">c) Clase C</li>
+      <li onclick="checkAnswer(this, false)">d) Clase D</li>
+    </ul>
+    <button class="show-answer-btn" onclick="toggleAnswer(this)">Ver explicación</button>
+    <div class="quiz-answer">
+      El primer octeto es <strong>172</strong>. Las IPs de Clase B van del 128 al 191. Como 172 está en ese rango → <strong>Clase B</strong>. Máscara por defecto: 255.255.0.0 (/16).
+    </div>
+  </div>
+
+  <!-- Pregunta 3 -->
+  <div class="quiz-item">
+    <div class="quiz-question">3. ¿Cuál es el salto (incremento) para una red /25?</div>
+    <ul class="quiz-options">
+      <li onclick="checkAnswer(this, false)">a) 64</li>
+      <li onclick="checkAnswer(this, true)">b) 128</li>
+      <li onclick="checkAnswer(this, false)">c) 192</li>
+      <li onclick="checkAnswer(this, false)">d) 254</li>
+    </ul>
+    <button class="show-answer-btn" onclick="toggleAnswer(this)">Ver explicación</button>
+    <div class="quiz-answer">
+      /25 → máscara 255.255.255.<strong>128</strong> → Salto = 256 − 128 = <strong>128</strong>. Las subredes serán: .0 y .128.
+    </div>
+  </div>
+
+  <!-- Pregunta 4 -->
+  <div class="quiz-item">
+    <div class="quiz-question">4. En VLSM, si necesitas 30 hosts, ¿qué máscara usas?</div>
+    <ul class="quiz-options">
+      <li onclick="checkAnswer(this, false)">a) /28 (14 hosts)</li>
+      <li onclick="checkAnswer(this, false)">b) /26 (62 hosts)</li>
+      <li onclick="checkAnswer(this, true)">c) /27 (30 hosts)</li>
+      <li onclick="checkAnswer(this, false)">d) /25 (126 hosts)</li>
+    </ul>
+    <button class="show-answer-btn" onclick="toggleAnswer(this)">Ver explicación</button>
+    <div class="quiz-answer">
+      Busco 2ⁿ − 2 ≥ 30. Con n=5: 2⁵ − 2 = 30 ≥ 30 ✅ → máscara <strong>/27</strong> (255.255.255.224). El /28 solo da 14 hosts (insuficiente) y el /26 da 62 (malgasta IPs).
+    </div>
+  </div>
+
+  <!-- Pregunta 5 -->
+  <div class="quiz-item">
+    <div class="quiz-question">5. Tienes la red 10.0.0.0/24 y necesitas 8 subredes. ¿Cuál es la nueva máscara?</div>
+    <ul class="quiz-options">
+      <li onclick="checkAnswer(this, false)">a) /25</li>
+      <li onclick="checkAnswer(this, false)">b) /26</li>
+      <li onclick="checkAnswer(this, true)">c) /27</li>
+      <li onclick="checkAnswer(this, false)">d) /28</li>
+    </ul>
+    <button class="show-answer-btn" onclick="toggleAnswer(this)">Ver explicación</button>
+    <div class="quiz-answer">
+      2ⁿ ≥ 8 → n = 3 bits. Nueva máscara: /24 + 3 = <strong>/27</strong>. Esto da 8 subredes con 30 hosts cada una.
+    </div>
+  </div>
+
+  <!-- Pregunta 6 -->
+  <div class="quiz-item">
+    <div class="quiz-question">6. ¿Cuál es la diferencia principal entre FLSM y VLSM?</div>
+    <ul class="quiz-options">
+      <li onclick="checkAnswer(this, false)">a) FLSM usa IPv6 y VLSM usa IPv4</li>
+      <li onclick="checkAnswer(this, true)">b) FLSM crea subredes del mismo tamaño; VLSM crea subredes de distintos tamaños</li>
+      <li onclick="checkAnswer(this, false)">c) VLSM es más fácil de calcular que FLSM</li>
+      <li onclick="checkAnswer(this, false)">d) FLSM es más eficiente en uso de IPs</li>
+    </ul>
+    <button class="show-answer-btn" onclick="toggleAnswer(this)">Ver explicación</button>
+    <div class="quiz-answer">
+      FLSM (Fixed Length Subnet Mask) → <strong>todas las subredes iguales</strong>, fácil pero desperdicia IPs. VLSM (Variable Length Subnet Mask) → <strong>subredes de tamaño variable</strong>, eficiente pero más complejo.
+    </div>
+  </div>
+
+  <!-- Pregunta 7 (desarrollo) -->
+  <div class="quiz-item">
+    <div class="quiz-question">7. [DESARROLLO] Dada la red 192.168.1.0/24, crea 4 subredes usando FLSM. Indica: nueva máscara, salto, hosts por subred y la tabla completa.</div>
+    <button class="show-answer-btn" onclick="toggleAnswer(this)">Ver respuesta completa</button>
+    <div class="quiz-answer">
+      <strong>Paso 1:</strong> 2ⁿ ≥ 4 → n = 2 bits<br>
+      <strong>Nueva máscara:</strong> /24 + 2 = /26 → 255.255.255.192<br>
+      <strong>Salto:</strong> 256 − 192 = 64<br>
+      <strong>Hosts por subred:</strong> 2⁶ − 2 = 62<br><br>
+      Subred 1: Red=192.168.1.0 | Primer=192.168.1.1 | Último=192.168.1.62 | BC=192.168.1.63<br>
+      Subred 2: Red=192.168.1.64 | Primer=192.168.1.65 | Último=192.168.1.126 | BC=192.168.1.127<br>
+      Subred 3: Red=192.168.1.128 | Primer=192.168.1.129 | Último=192.168.1.190 | BC=192.168.1.191<br>
+      Subred 4: Red=192.168.1.192 | Primer=192.168.1.193 | Último=192.168.1.254 | BC=192.168.1.255
+    </div>
+  </div>
+
+  <!-- Pregunta 8 (desarrollo) -->
+  <div class="quiz-item">
+    <div class="quiz-question">8. [DESARROLLO] Convierte las siguientes máscaras a notación CIDR: 255.255.255.0, 255.255.255.192, 255.255.255.224, 255.255.255.240, 255.255.255.248</div>
+    <button class="show-answer-btn" onclick="toggleAnswer(this)">Ver respuesta completa</button>
+    <div class="quiz-answer">
+      255.255.255.0 → <strong>/24</strong> (24 unos)<br>
+      255.255.255.192 → 192 en binario = 11000000 → 24+2 = <strong>/26</strong><br>
+      255.255.255.224 → 224 en binario = 11100000 → 24+3 = <strong>/27</strong><br>
+      255.255.255.240 → 240 en binario = 11110000 → 24+4 = <strong>/28</strong><br>
+      255.255.255.248 → 248 en binario = 11111000 → 24+5 = <strong>/29</strong>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <p>Apunte Pre-Prueba · Sistemas Operativos Otoño 2026 · INACAP</p>
+  <p style="margin-top:4px;opacity:0.7;">Unidad 1: Direccionamiento de redes basada en protocolos TCP/IP</p>
+</footer>
+
+<script>
+  function checkAnswer(el, isCorrect) {
+    const parent = el.closest('.quiz-item');
+    const options = parent.querySelectorAll('li');
+    options.forEach(o => { o.classList.remove('correct', 'wrong'); o.style.pointerEvents = 'none'; });
+    el.classList.add(isCorrect ? 'correct' : 'wrong');
+    if (!isCorrect) {
+      options.forEach(o => { if (o.getAttribute('onclick').includes('true')) o.classList.add('correct'); });
+    }
+  }
+
+  function toggleAnswer(btn) {
+    const answer = btn.nextElementSibling;
+    if (answer.style.display === 'block') {
+      answer.style.display = 'none';
+      btn.textContent = 'Ver explicación';
+    } else {
+      answer.style.display = 'block';
+      btn.textContent = 'Ocultar explicación';
+    }
+  }
+
+  function updateProgress() {
+    const total = 20;
+    const checked = document.querySelectorAll('#checklist-card input[type="checkbox"]:checked').length;
+    document.getElementById('progress-count').textContent = checked;
+    document.getElementById('progress-fill').style.width = (checked / total * 100) + '%';
+  }
+
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        document.querySelectorAll('.nav-tab').forEach(t => {
+          t.classList.toggle('active', t.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { rootMargin: '-50% 0px -50% 0px' });
+
+  document.querySelectorAll('section[id]').forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
