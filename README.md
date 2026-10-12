@@ -1,5 +1,7 @@
 # 📡 Apunte Pre-Prueba: Redes (Direccionamiento IP)
 
+[![CI](https://github.com/Fernandamv96/Apunte-pre-prueba-redes-/actions/workflows/ci.yml/badge.svg)](https://github.com/Fernandamv96/Apunte-pre-prueba-redes-/actions/workflows/ci.yml)
+
 > Apunte de estudio en formato web para repasar antes de la prueba de Redes, enfocado en direccionamiento IP.
 
 [![Vercel](https://img.shields.io/badge/deploy-vercel-black?logo=vercel)](https://apunte-pre-prueba-redes.vercel.app)
@@ -36,6 +38,20 @@ Abre `index.html` en tu navegador.
 ## 🛠️ Despliegue
 
 El proyecto se despliega automáticamente con **Vercel** en cada push a la rama `main`.
+
+## 🔒 Calidad y seguridad
+
+- CI en cada push y PR: `html-validate`, además de CodeQL, Dependabot y gitleaks en pre-commit.
+- Para reportar vulnerabilidades, mira [SECURITY.md](SECURITY.md).
+
+## 💡 Qué aprendí
+
+- A explicar subnetting y direccionamiento IP con ejemplos paso a paso.
+- Que escribir un apunte para otros es la mejor forma de estudiar.
+
+## 📄 Licencia
+
+[MIT](LICENSE) © 2026 Fernanda (Fernandamv96)
 
 ## 👤 Autora
 
